@@ -55,10 +55,16 @@ class Destination
      */
     private $IdDestination;
 
+    /**
+     * @ORM\OneToMany(targetEntity=DemandeEvenement::class, mappedBy="destination")
+     */
+    private $demandeEvenements;
+
     public function __construct()
     {
         $this->idVille = new ArrayCollection();
         $this->idSousCategorie = new ArrayCollection();
+        $this->demandeEvenements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -170,6 +176,36 @@ class Destination
     public function setIdDestination(?CoutDestination $idDestination): self
     {
         $this->idDestination = $idDestination;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|DemandeEvenement[]
+     */
+    public function getDemandeEvenements(): Collection
+    {
+        return $this->demandeEvenements;
+    }
+
+    public function addDemandeEvenement(DemandeEvenement $demandeEvenement): self
+    {
+        if (!$this->demandeEvenements->contains($demandeEvenement)) {
+            $this->demandeEvenements[] = $demandeEvenement;
+            $demandeEvenement->setDestination($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDemandeEvenement(DemandeEvenement $demandeEvenement): self
+    {
+        if ($this->demandeEvenements->removeElement($demandeEvenement)) {
+            // set the owning side to null (unless already changed)
+            if ($demandeEvenement->getDestination() === $this) {
+                $demandeEvenement->setDestination(null);
+            }
+        }
 
         return $this;
     }

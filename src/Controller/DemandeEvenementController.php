@@ -6,16 +6,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class TmapController extends AbstractController
+class DemandeEvenementController extends AbstractController
 {
     /**
-     * @Route("/test", name="tmap")
+     * @Route("/demande/evenement", name="demande_evenement")
      */
     public function index(): Response
     {
-        return $this->render('tmap/index.html.twig', [
-            'controller_name' => 'TmapController',
+        return $this->render('demande_evenement/index.html.twig', [
+            'controller_name' => 'DemandeEvenementController',
         ]);
     }
-   
 }

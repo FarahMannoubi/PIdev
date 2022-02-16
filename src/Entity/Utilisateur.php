@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -53,15 +55,16 @@ class Utilisateur
     private $email;
 
     /**
-     * @ORM\ManyToOne(targetEntity=DemandeEvenement::class, inversedBy="idPartenaire")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\OneToMany(targetEntity=DemandeEvenement::class, mappedBy="utilisateur")
      */
-    private $idUtilisateur;
+    private $demandeEvenements;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Avis::class, inversedBy="idUtilisateur")
-     */
-    private $IdUtilisateur;
+    public function __construct()
+    {
+        $this->demandeEvenements = new ArrayCollection();
+    }
+
+    
 
     public function getId(): ?int
     {
@@ -160,6 +163,36 @@ class Utilisateur
     public function setIdUtilisateur(?DemandeEvenement $idUtilisateur): self
     {
         $this->idUtilisateur = $idUtilisateur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|DemandeEvenement[]
+     */
+    public function getDemandeEvenements(): Collection
+    {
+        return $this->demandeEvenements;
+    }
+
+    public function addDemandeEvenement(DemandeEvenement $demandeEvenement): self
+    {
+        if (!$this->demandeEvenements->contains($demandeEvenement)) {
+            $this->demandeEvenements[] = $demandeEvenement;
+            $demandeEvenement->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDemandeEvenement(DemandeEvenement $demandeEvenement): self
+    {
+        if ($this->demandeEvenements->removeElement($demandeEvenement)) {
+            // set the owning side to null (unless already changed)
+            if ($demandeEvenement->getUtilisateur() === $this) {
+                $demandeEvenement->setUtilisateur(null);
+            }
+        }
 
         return $this;
     }

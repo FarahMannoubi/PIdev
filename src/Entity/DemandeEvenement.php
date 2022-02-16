@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\DemandeEvenementRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,14 +18,9 @@ class DemandeEvenement
     private $id;
 
     /**
-     * @ORM\OneToMany(targetEntity=Utilisateur::class, mappedBy="idUtilisateur")
+     * @ORM\Column(type="string", length=255)
      */
-    private $idPartenaire;
-
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $dateDemande;
+    private $dataDeDemande;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -40,99 +33,63 @@ class DemandeEvenement
     private $descriptionDemande;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="string", length=255)
      */
-    private $dateDebutEv;
-
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $dateFinEv;
+    private $dateDebEven;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $heureDebutEv;
-
-    /**
-     * @ORM\Column(type="time")
-     */
-    private $heureFinEv;
+    private $dateFinEven;
 
     /**
      * @ORM\Column(type="string", length=255)
+     */
+    private $heureDebEven;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $heureFinEven;
+
+    /**
+     * @ORM\Column(type="integer")
      */
     private $nbBillet;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $descriptionEvenement;
+    private $discriptionEven;
 
     /**
-     * @ORM\ManyToOne(targetEntity=BilletEvenement::class, inversedBy="idEvenement")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="string", length=255)
      */
-    private $idEvenement;
+    private $image;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Reservation::class, inversedBy="idEvenement")
+     * @ORM\ManyToOne(targetEntity=Utilisateur::class, inversedBy="demandeEvenements")
      */
-    private $idEnement;
+    private $utilisateur;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Avis::class, inversedBy="idEvenement")
+     * @ORM\ManyToOne(targetEntity=Destination::class, inversedBy="demandeEvenements")
      */
-    private $idDemandeEvenement;
-
-    public function __construct()
-    {
-        $this->idPartenaire = new ArrayCollection();
-    }
+    private $destination;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Collection|Utilisateur[]
-     */
-    public function getIdPartenaire(): Collection
+    public function getDataDeDemande(): ?string
     {
-        return $this->idPartenaire;
+        return $this->dataDeDemande;
     }
 
-    public function addIdPartenaire(Utilisateur $idPartenaire): self
+    public function setDataDeDemande(string $dataDeDemande): self
     {
-        if (!$this->idPartenaire->contains($idPartenaire)) {
-            $this->idPartenaire[] = $idPartenaire;
-            $idPartenaire->setIdUtilisateur($this);
-        }
-
-        return $this;
-    }
-
-    public function removeIdPartenaire(Utilisateur $idPartenaire): self
-    {
-        if ($this->idPartenaire->removeElement($idPartenaire)) {
-            // set the owning side to null (unless already changed)
-            if ($idPartenaire->getIdUtilisateur() === $this) {
-                $idPartenaire->setIdUtilisateur(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getDateDemande(): ?\DateTimeInterface
-    {
-        return $this->dateDemande;
-    }
-
-    public function setDateDemande(\DateTimeInterface $dateDemande): self
-    {
-        $this->dateDemande = $dateDemande;
+        $this->dataDeDemande = $dataDeDemande;
 
         return $this;
     }
@@ -161,110 +118,110 @@ class DemandeEvenement
         return $this;
     }
 
-    public function getDateDebutEv(): ?\DateTimeInterface
+    public function getDateDebEven(): ?string
     {
-        return $this->dateDebutEv;
+        return $this->dateDebEven;
     }
 
-    public function setDateDebutEv(\DateTimeInterface $dateDebutEv): self
+    public function setDateDebEven(string $dateDebEven): self
     {
-        $this->dateDebutEv = $dateDebutEv;
+        $this->dateDebEven = $dateDebEven;
 
         return $this;
     }
 
-    public function getDateFinEv(): ?\DateTimeInterface
+    public function getDateFinEven(): ?string
     {
-        return $this->dateFinEv;
+        return $this->dateFinEven;
     }
 
-    public function setDateFinEv(\DateTimeInterface $dateFinEv): self
+    public function setDateFinEven(string $dateFinEven): self
     {
-        $this->dateFinEv = $dateFinEv;
+        $this->dateFinEven = $dateFinEven;
 
         return $this;
     }
 
-    public function getHeureDebutEv(): ?string
+    public function getHeureDebEven(): ?string
     {
-        return $this->heureDebutEv;
+        return $this->heureDebEven;
     }
 
-    public function setHeureDebutEv(string $heureDebutEv): self
+    public function setHeureDebEven(string $heureDebEven): self
     {
-        $this->heureDebutEv = $heureDebutEv;
+        $this->heureDebEven = $heureDebEven;
 
         return $this;
     }
 
-    public function getHeureFinEv(): ?\DateTimeInterface
+    public function getHeureFinEven(): ?string
     {
-        return $this->heureFinEv;
+        return $this->heureFinEven;
     }
 
-    public function setHeureFinEv(\DateTimeInterface $heureFinEv): self
+    public function setHeureFinEven(string $heureFinEven): self
     {
-        $this->heureFinEv = $heureFinEv;
+        $this->heureFinEven = $heureFinEven;
 
         return $this;
     }
 
-    public function getNbBillet(): ?string
+    public function getNbBillet(): ?int
     {
         return $this->nbBillet;
     }
 
-    public function setNbBillet(string $nbBillet): self
+    public function setNbBillet(int $nbBillet): self
     {
         $this->nbBillet = $nbBillet;
 
         return $this;
     }
 
-    public function getDescriptionEvenement(): ?string
+    public function getDiscriptionEven(): ?string
     {
-        return $this->descriptionEvenement;
+        return $this->discriptionEven;
     }
 
-    public function setDescriptionEvenement(string $descriptionEvenement): self
+    public function setDiscriptionEven(string $discriptionEven): self
     {
-        $this->descriptionEvenement = $descriptionEvenement;
+        $this->discriptionEven = $discriptionEven;
 
         return $this;
     }
 
-    public function getIdEvenement(): ?BilletEvenement
+    public function getImage(): ?string
     {
-        return $this->idEvenement;
+        return $this->image;
     }
 
-    public function setIdEvenement(?BilletEvenement $idEvenement): self
+    public function setImage(string $image): self
     {
-        $this->idEvenement = $idEvenement;
+        $this->image = $image;
 
         return $this;
     }
 
-    public function getIdEnement(): ?Reservation
+    public function getUtilisateur(): ?Utilisateur
     {
-        return $this->idEnement;
+        return $this->utilisateur;
     }
 
-    public function setIdEnement(?Reservation $idEnement): self
+    public function setUtilisateur(?Utilisateur $utilisateur): self
     {
-        $this->idEnement = $idEnement;
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }
 
-    public function getIdDemandeEvenement(): ?Avis
+    public function getDestination(): ?Destination
     {
-        return $this->idDemandeEvenement;
+        return $this->destination;
     }
 
-    public function setIdDemandeEvenement(?Avis $idDemandeEvenement): self
+    public function setDestination(?Destination $destination): self
     {
-        $this->idDemandeEvenement = $idDemandeEvenement;
+        $this->destination = $destination;
 
         return $this;
     }

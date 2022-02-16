@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CategorieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,41 +20,46 @@ class Categorie
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\OneToMany(targetEntity=SousCategorie::class, mappedBy="categorie")
      */
-    private $libelle;
+    private $sousCategories;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=SousCategorie::class, inversedBy="idCategorie")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $idCategorie;
+    public function __construct()
+    {
+        $this->sousCategories = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getLibelle(): ?string
+    /**
+     * @return Collection|SousCategorie[]
+     */
+    public function getSousCategories(): Collection
     {
-        return $this->libelle;
+        return $this->sousCategories;
     }
 
-    public function setLibelle(string $libelle): self
+    public function addSousCategory(SousCategorie $sousCategory): self
     {
-        $this->libelle = $libelle;
+        if (!$this->sousCategories->contains($sousCategory)) {
+            $this->sousCategories[] = $sousCategory;
+            $sousCategory->setCategorie($this);
+        }
 
         return $this;
     }
 
-    public function getIdCategorie(): ?SousCategorie
+    public function removeSousCategory(SousCategorie $sousCategory): self
     {
-        return $this->idCategorie;
-    }
-
-    public function setIdCategorie(?SousCategorie $idCategorie): self
-    {
-        $this->idCategorie = $idCategorie;
+        if ($this->sousCategories->removeElement($sousCategory)) {
+            // set the owning side to null (unless already changed)
+            if ($sousCategory->getCategorie() === $this) {
+                $sousCategory->setCategorie(null);
+            }
+        }
 
         return $this;
     }

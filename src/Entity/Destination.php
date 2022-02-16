@@ -20,45 +20,31 @@ class Destination
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $libelle;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Ville::class, mappedBy="idVille", orphanRemoval=true)
-     */
-    private $idVille;
-
-    /**
-     * @ORM\OneToMany(targetEntity=SousCategorie::class, mappedBy="IdSousCategorie")
-     */
-    private $idSousCategorie;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $image;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $discription;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=CoutDestination::class, inversedBy="idDistination")
+     * @ORM\ManyToOne(targetEntity=SousCategorie::class, inversedBy="destinations")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $idDestination;
+    private $souscategorie;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Avis::class, inversedBy="idDestination")
+     * @ORM\OneToMany(targetEntity=CoutDestination::class, mappedBy="destination")
      */
-    private $IdDestination;
+    private $coutDestinations;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Avis::class, mappedBy="destination")
+     */
+    private $avis;
+
+    /**
+     * @ORM\OneToMany(targetEntity=DemandeEvenement::class, mappedBy="destination")
+     */
+    private $demandeEvenements;
 
     public function __construct()
     {
-        $this->idVille = new ArrayCollection();
-        $this->idSousCategorie = new ArrayCollection();
+        $this->coutDestinations = new ArrayCollection();
+        $this->avis = new ArrayCollection();
+        $this->demandeEvenements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -66,42 +52,42 @@ class Destination
         return $this->id;
     }
 
-    public function getLibelle(): ?string
+    public function getSouscategorie(): ?SousCategorie
     {
-        return $this->libelle;
+        return $this->souscategorie;
     }
 
-    public function setLibelle(string $libelle): self
+    public function setSouscategorie(?SousCategorie $souscategorie): self
     {
-        $this->libelle = $libelle;
+        $this->souscategorie = $souscategorie;
 
         return $this;
     }
 
     /**
-     * @return Collection|Ville[]
+     * @return Collection|CoutDestination[]
      */
-    public function getIdVille(): Collection
+    public function getCoutDestinations(): Collection
     {
-        return $this->idVille;
+        return $this->coutDestinations;
     }
 
-    public function addIdVille(Ville $idVille): self
+    public function addCoutDestination(CoutDestination $coutDestination): self
     {
-        if (!$this->idVille->contains($idVille)) {
-            $this->idVille[] = $idVille;
-            $idVille->setIdVille($this);
+        if (!$this->coutDestinations->contains($coutDestination)) {
+            $this->coutDestinations[] = $coutDestination;
+            $coutDestination->setDestination($this);
         }
 
         return $this;
     }
 
-    public function removeIdVille(Ville $idVille): self
+    public function removeCoutDestination(CoutDestination $coutDestination): self
     {
-        if ($this->idVille->removeElement($idVille)) {
+        if ($this->coutDestinations->removeElement($coutDestination)) {
             // set the owning side to null (unless already changed)
-            if ($idVille->getIdVille() === $this) {
-                $idVille->setIdVille(null);
+            if ($coutDestination->getDestination() === $this) {
+                $coutDestination->setDestination(null);
             }
         }
 
@@ -109,67 +95,61 @@ class Destination
     }
 
     /**
-     * @return Collection|SousCategorie[]
+     * @return Collection|Avis[]
      */
-    public function getIdSousCategorie(): Collection
+    public function getAvis(): Collection
     {
-        return $this->idSousCategorie;
+        return $this->avis;
     }
 
-    public function addIdSousCategorie(SousCategorie $idSousCategorie): self
+    public function addAvi(Avis $avi): self
     {
-        if (!$this->idSousCategorie->contains($idSousCategorie)) {
-            $this->idSousCategorie[] = $idSousCategorie;
-            $idSousCategorie->setIdSousCategorie($this);
+        if (!$this->avis->contains($avi)) {
+            $this->avis[] = $avi;
+            $avi->setDestination($this);
         }
 
         return $this;
     }
 
-    public function removeIdSousCategorie(SousCategorie $idSousCategorie): self
+    public function removeAvi(Avis $avi): self
     {
-        if ($this->idSousCategorie->removeElement($idSousCategorie)) {
+        if ($this->avis->removeElement($avi)) {
             // set the owning side to null (unless already changed)
-            if ($idSousCategorie->getIdSousCategorie() === $this) {
-                $idSousCategorie->setIdSousCategorie(null);
+            if ($avi->getDestination() === $this) {
+                $avi->setDestination(null);
             }
         }
 
         return $this;
     }
 
-    public function getImage(): ?string
+    /**
+     * @return Collection|DemandeEvenement[]
+     */
+    public function getDemandeEvenements(): Collection
     {
-        return $this->image;
+        return $this->demandeEvenements;
     }
 
-    public function setImage(string $image): self
+    public function addDemandeEvenement(DemandeEvenement $demandeEvenement): self
     {
-        $this->image = $image;
+        if (!$this->demandeEvenements->contains($demandeEvenement)) {
+            $this->demandeEvenements[] = $demandeEvenement;
+            $demandeEvenement->setDestination($this);
+        }
 
         return $this;
     }
 
-    public function getDiscription(): ?string
+    public function removeDemandeEvenement(DemandeEvenement $demandeEvenement): self
     {
-        return $this->discription;
-    }
-
-    public function setDiscription(string $discription): self
-    {
-        $this->discription = $discription;
-
-        return $this;
-    }
-
-    public function getIdDestination(): ?CoutDestination
-    {
-        return $this->idDestination;
-    }
-
-    public function setIdDestination(?CoutDestination $idDestination): self
-    {
-        $this->idDestination = $idDestination;
+        if ($this->demandeEvenements->removeElement($demandeEvenement)) {
+            // set the owning side to null (unless already changed)
+            if ($demandeEvenement->getDestination() === $this) {
+                $demandeEvenement->setDestination(null);
+            }
+        }
 
         return $this;
     }

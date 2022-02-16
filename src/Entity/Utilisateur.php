@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,148 +20,68 @@ class Utilisateur
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\OneToOne(targetEntity=Avis::class, mappedBy="idClient", cascade={"persist", "remove"})
      */
-    private $login;
+    private $avis;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\OneToMany(targetEntity=DemandeEvenement::class, mappedBy="idClient")
      */
-    private $password;
+    private $demandeEvenements;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $nom;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $prenom;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $age;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $adresse;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $email;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=DemandeEvenement::class, inversedBy="idPartenaire")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $idUtilisateur;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Avis::class, inversedBy="idUtilisateur")
-     */
-    private $IdUtilisateur;
+    public function __construct()
+    {
+        $this->demandeEvenements = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getLogin(): ?string
+    public function getAvis(): ?Avis
     {
-        return $this->login;
+        return $this->avis;
     }
 
-    public function setLogin(string $login): self
+    public function setAvis(Avis $avis): self
     {
-        $this->login = $login;
+        // set the owning side of the relation if necessary
+        if ($avis->getIdClient() !== $this) {
+            $avis->setIdClient($this);
+        }
+
+        $this->avis = $avis;
 
         return $this;
     }
 
-    public function getPassword(): ?string
+    /**
+     * @return Collection|DemandeEvenement[]
+     */
+    public function getDemandeEvenements(): Collection
     {
-        return $this->password;
+        return $this->demandeEvenements;
     }
 
-    public function setPassword(string $password): self
+    public function addDemandeEvenement(DemandeEvenement $demandeEvenement): self
     {
-        $this->password = $password;
+        if (!$this->demandeEvenements->contains($demandeEvenement)) {
+            $this->demandeEvenements[] = $demandeEvenement;
+            $demandeEvenement->setIdClient($this);
+        }
 
         return $this;
     }
 
-    public function getNom(): ?string
+    public function removeDemandeEvenement(DemandeEvenement $demandeEvenement): self
     {
-        return $this->nom;
-    }
-
-    public function setNom(string $nom): self
-    {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getPrenom(): ?string
-    {
-        return $this->prenom;
-    }
-
-    public function setPrenom(string $prenom): self
-    {
-        $this->prenom = $prenom;
-
-        return $this;
-    }
-
-    public function getAge(): ?string
-    {
-        return $this->age;
-    }
-
-    public function setAge(string $age): self
-    {
-        $this->age = $age;
-
-        return $this;
-    }
-
-    public function getAdresse(): ?string
-    {
-        return $this->adresse;
-    }
-
-    public function setAdresse(string $adresse): self
-    {
-        $this->adresse = $adresse;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function getIdUtilisateur(): ?DemandeEvenement
-    {
-        return $this->idUtilisateur;
-    }
-
-    public function setIdUtilisateur(?DemandeEvenement $idUtilisateur): self
-    {
-        $this->idUtilisateur = $idUtilisateur;
+        if ($this->demandeEvenements->removeElement($demandeEvenement)) {
+            // set the owning side to null (unless already changed)
+            if ($demandeEvenement->getIdClient() === $this) {
+                $demandeEvenement->setIdClient(null);
+            }
+        }
 
         return $this;
     }

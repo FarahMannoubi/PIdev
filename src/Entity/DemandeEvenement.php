@@ -20,74 +20,39 @@ class DemandeEvenement
     private $id;
 
     /**
-     * @ORM\OneToMany(targetEntity=Utilisateur::class, mappedBy="idUtilisateur")
+     * @ORM\OneToMany(targetEntity=BilletEvenement::class, mappedBy="demandeEvent")
      */
-    private $idPartenaire;
+    private $billetEvenements;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\OneToMany(targetEntity=Avis::class, mappedBy="DemandeEvent")
      */
-    private $dateDemande;
+    private $avis;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $statu;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $descriptionDemande;
-
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $dateDebutEv;
-
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $dateFinEv;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $heureDebutEv;
-
-    /**
-     * @ORM\Column(type="time")
-     */
-    private $heureFinEv;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $nbBillet;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $descriptionEvenement;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=BilletEvenement::class, inversedBy="idEvenement")
+     * @ORM\ManyToOne(targetEntity=Utilisateur::class, inversedBy="demandeEvenements")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $idEvenement;
+    private $idClient;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Reservation::class, inversedBy="idEvenement")
+     * @ORM\OneToMany(targetEntity=Reservation::class, mappedBy="demandeEvent")
      */
-    private $idEnement;
+    private $reservations;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Avis::class, inversedBy="idEvenement")
+     * @ORM\ManyToOne(targetEntity=Destination::class, inversedBy="demandeEvenements")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $idDemandeEvenement;
+    private $destination;
+
+
 
     public function __construct()
     {
-        $this->idPartenaire = new ArrayCollection();
+        $this->billetEvenements = new ArrayCollection();
+        $this->avis = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -96,175 +61,115 @@ class DemandeEvenement
     }
 
     /**
-     * @return Collection|Utilisateur[]
+     * @return Collection|BilletEvenement[]
      */
-    public function getIdPartenaire(): Collection
+    public function getBilletEvenements(): Collection
     {
-        return $this->idPartenaire;
+        return $this->billetEvenements;
     }
 
-    public function addIdPartenaire(Utilisateur $idPartenaire): self
+    public function addBilletEvenement(BilletEvenement $billetEvenement): self
     {
-        if (!$this->idPartenaire->contains($idPartenaire)) {
-            $this->idPartenaire[] = $idPartenaire;
-            $idPartenaire->setIdUtilisateur($this);
+        if (!$this->billetEvenements->contains($billetEvenement)) {
+            $this->billetEvenements[] = $billetEvenement;
+            $billetEvenement->setDemandeEvent($this);
         }
 
         return $this;
     }
 
-    public function removeIdPartenaire(Utilisateur $idPartenaire): self
+    public function removeBilletEvenement(BilletEvenement $billetEvenement): self
     {
-        if ($this->idPartenaire->removeElement($idPartenaire)) {
+        if ($this->billetEvenements->removeElement($billetEvenement)) {
             // set the owning side to null (unless already changed)
-            if ($idPartenaire->getIdUtilisateur() === $this) {
-                $idPartenaire->setIdUtilisateur(null);
+            if ($billetEvenement->getDemandeEvent() === $this) {
+                $billetEvenement->setDemandeEvent(null);
             }
         }
 
         return $this;
     }
 
-    public function getDateDemande(): ?\DateTimeInterface
+    /**
+     * @return Collection|Avis[]
+     */
+    public function getAvis(): Collection
     {
-        return $this->dateDemande;
+        return $this->avis;
     }
 
-    public function setDateDemande(\DateTimeInterface $dateDemande): self
+    public function addAvi(Avis $avi): self
     {
-        $this->dateDemande = $dateDemande;
+        if (!$this->avis->contains($avi)) {
+            $this->avis[] = $avi;
+            $avi->setDemandeEvent($this);
+        }
 
         return $this;
     }
 
-    public function getStatu(): ?string
+    public function removeAvi(Avis $avi): self
     {
-        return $this->statu;
-    }
-
-    public function setStatu(string $statu): self
-    {
-        $this->statu = $statu;
+        if ($this->avis->removeElement($avi)) {
+            // set the owning side to null (unless already changed)
+            if ($avi->getDemandeEvent() === $this) {
+                $avi->setDemandeEvent(null);
+            }
+        }
 
         return $this;
     }
 
-    public function getDescriptionDemande(): ?string
+    public function getIdClient(): ?Utilisateur
     {
-        return $this->descriptionDemande;
+        return $this->idClient;
     }
 
-    public function setDescriptionDemande(string $descriptionDemande): self
+    public function setIdClient(?Utilisateur $idClient): self
     {
-        $this->descriptionDemande = $descriptionDemande;
+        $this->idClient = $idClient;
 
         return $this;
     }
 
-    public function getDateDebutEv(): ?\DateTimeInterface
+    /**
+     * @return Collection|Reservation[]
+     */
+    public function getReservations(): Collection
     {
-        return $this->dateDebutEv;
+        return $this->reservations;
     }
 
-    public function setDateDebutEv(\DateTimeInterface $dateDebutEv): self
+    public function addReservation(Reservation $reservation): self
     {
-        $this->dateDebutEv = $dateDebutEv;
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations[] = $reservation;
+            $reservation->setDemandeEvent($this);
+        }
 
         return $this;
     }
 
-    public function getDateFinEv(): ?\DateTimeInterface
+    public function removeReservation(Reservation $reservation): self
     {
-        return $this->dateFinEv;
-    }
-
-    public function setDateFinEv(\DateTimeInterface $dateFinEv): self
-    {
-        $this->dateFinEv = $dateFinEv;
+        if ($this->reservations->removeElement($reservation)) {
+            // set the owning side to null (unless already changed)
+            if ($reservation->getDemandeEvent() === $this) {
+                $reservation->setDemandeEvent(null);
+            }
+        }
 
         return $this;
     }
 
-    public function getHeureDebutEv(): ?string
+    public function getDestination(): ?Destination
     {
-        return $this->heureDebutEv;
+        return $this->destination;
     }
 
-    public function setHeureDebutEv(string $heureDebutEv): self
+    public function setDestination(?Destination $destination): self
     {
-        $this->heureDebutEv = $heureDebutEv;
-
-        return $this;
-    }
-
-    public function getHeureFinEv(): ?\DateTimeInterface
-    {
-        return $this->heureFinEv;
-    }
-
-    public function setHeureFinEv(\DateTimeInterface $heureFinEv): self
-    {
-        $this->heureFinEv = $heureFinEv;
-
-        return $this;
-    }
-
-    public function getNbBillet(): ?string
-    {
-        return $this->nbBillet;
-    }
-
-    public function setNbBillet(string $nbBillet): self
-    {
-        $this->nbBillet = $nbBillet;
-
-        return $this;
-    }
-
-    public function getDescriptionEvenement(): ?string
-    {
-        return $this->descriptionEvenement;
-    }
-
-    public function setDescriptionEvenement(string $descriptionEvenement): self
-    {
-        $this->descriptionEvenement = $descriptionEvenement;
-
-        return $this;
-    }
-
-    public function getIdEvenement(): ?BilletEvenement
-    {
-        return $this->idEvenement;
-    }
-
-    public function setIdEvenement(?BilletEvenement $idEvenement): self
-    {
-        $this->idEvenement = $idEvenement;
-
-        return $this;
-    }
-
-    public function getIdEnement(): ?Reservation
-    {
-        return $this->idEnement;
-    }
-
-    public function setIdEnement(?Reservation $idEnement): self
-    {
-        $this->idEnement = $idEnement;
-
-        return $this;
-    }
-
-    public function getIdDemandeEvenement(): ?Avis
-    {
-        return $this->idDemandeEvenement;
-    }
-
-    public function setIdDemandeEvenement(?Avis $idDemandeEvenement): self
-    {
-        $this->idDemandeEvenement = $idDemandeEvenement;
+        $this->destination = $destination;
 
         return $this;
     }

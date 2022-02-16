@@ -20,24 +20,19 @@ class SousCategorie
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $libelle;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Categorie::class, mappedBy="idCategorie")
-     */
-    private $idCategorie;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Destination::class, inversedBy="idSousCategorie")
+     * @ORM\ManyToOne(targetEntity=Categorie::class, inversedBy="sousCategories")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $IdSousCategorie;
+    private $categorie;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Destination::class, mappedBy="souscategorie")
+     */
+    private $destinations;
 
     public function __construct()
     {
-        $this->idCategorie = new ArrayCollection();
+        $this->destinations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -45,56 +40,44 @@ class SousCategorie
         return $this->id;
     }
 
-    public function getLibelle(): ?string
+    public function getCategorie(): ?Categorie
     {
-        return $this->libelle;
+        return $this->categorie;
     }
 
-    public function setLibelle(string $libelle): self
+    public function setCategorie(?Categorie $categorie): self
     {
-        $this->libelle = $libelle;
+        $this->categorie = $categorie;
 
         return $this;
     }
 
     /**
-     * @return Collection|Categorie[]
+     * @return Collection|Destination[]
      */
-    public function getIdCategorie(): Collection
+    public function getDestinations(): Collection
     {
-        return $this->idCategorie;
+        return $this->destinations;
     }
 
-    public function addIdCategorie(Categorie $idCategorie): self
+    public function addDestination(Destination $destination): self
     {
-        if (!$this->idCategorie->contains($idCategorie)) {
-            $this->idCategorie[] = $idCategorie;
-            $idCategorie->setIdCategorie($this);
+        if (!$this->destinations->contains($destination)) {
+            $this->destinations[] = $destination;
+            $destination->setSouscategorie($this);
         }
 
         return $this;
     }
 
-    public function removeIdCategorie(Categorie $idCategorie): self
+    public function removeDestination(Destination $destination): self
     {
-        if ($this->idCategorie->removeElement($idCategorie)) {
+        if ($this->destinations->removeElement($destination)) {
             // set the owning side to null (unless already changed)
-            if ($idCategorie->getIdCategorie() === $this) {
-                $idCategorie->setIdCategorie(null);
+            if ($destination->getSouscategorie() === $this) {
+                $destination->setSouscategorie(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getIdSousCategorie(): ?Destination
-    {
-        return $this->IdSousCategorie;
-    }
-
-    public function setIdSousCategorie(?Destination $IdSousCategorie): self
-    {
-        $this->IdSousCategorie = $IdSousCategorie;
 
         return $this;
     }

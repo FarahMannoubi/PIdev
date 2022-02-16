@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\AvisRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,152 +18,60 @@ class Avis
     private $id;
 
     /**
-     * @ORM\OneToMany(targetEntity=Utilisateur::class, mappedBy="IdUtilisateur")
+     * @ORM\ManyToOne(targetEntity=Destination::class, inversedBy="avis")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $idUtilisateur;
+    private $destination;
 
     /**
-     * @ORM\OneToMany(targetEntity=DemandeEvenement::class, mappedBy="idDemandeEvenement")
+     * @ORM\OneToOne(targetEntity=Utilisateur::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $idEvenement;
+    private $idclient;
 
     /**
-     * @ORM\OneToMany(targetEntity=Destination::class, mappedBy="IdDestination")
+     * @ORM\ManyToOne(targetEntity=DemandeEvenement::class, inversedBy="avis")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $idDestination;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $avis;
-
-    /**
-     * @ORM\Column(type="float")
-     */
-    private $note;
-
-    public function __construct()
-    {
-        $this->idUtilisateur = new ArrayCollection();
-        $this->idEvenement = new ArrayCollection();
-        $this->idDestination = new ArrayCollection();
-    }
+    private $DemandeEvent;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Collection|Utilisateur[]
-     */
-    public function getIdUtilisateur(): Collection
+    public function getDestination(): ?Destination
     {
-        return $this->idUtilisateur;
+        return $this->destination;
     }
 
-    public function addIdUtilisateur(Utilisateur $idUtilisateur): self
+    public function setDestination(?Destination $destination): self
     {
-        if (!$this->idUtilisateur->contains($idUtilisateur)) {
-            $this->idUtilisateur[] = $idUtilisateur;
-            $idUtilisateur->setIdUtilisateur($this);
-        }
+        $this->destination = $destination;
 
         return $this;
     }
 
-    public function removeIdUtilisateur(Utilisateur $idUtilisateur): self
+    public function getIdclient(): ?Utilisateur
     {
-        if ($this->idUtilisateur->removeElement($idUtilisateur)) {
-            // set the owning side to null (unless already changed)
-            if ($idUtilisateur->getIdUtilisateur() === $this) {
-                $idUtilisateur->setIdUtilisateur(null);
-            }
-        }
+        return $this->idclient;
+    }
+
+    public function setIdclient(Utilisateur $idclient): self
+    {
+        $this->idclient = $idclient;
 
         return $this;
     }
 
-    /**
-     * @return Collection|DemandeEvenement[]
-     */
-    public function getIdEvenement(): Collection
+    public function getDemandeEvent(): ?DemandeEvenement
     {
-        return $this->idEvenement;
+        return $this->DemandeEvent;
     }
 
-    public function addIdEvenement(DemandeEvenement $idEvenement): self
+    public function setDemandeEvent(?DemandeEvenement $DemandeEvent): self
     {
-        if (!$this->idEvenement->contains($idEvenement)) {
-            $this->idEvenement[] = $idEvenement;
-            $idEvenement->setIdDemandeEvenement($this);
-        }
-
-        return $this;
-    }
-
-    public function removeIdEvenement(DemandeEvenement $idEvenement): self
-    {
-        if ($this->idEvenement->removeElement($idEvenement)) {
-            // set the owning side to null (unless already changed)
-            if ($idEvenement->getIdDemandeEvenement() === $this) {
-                $idEvenement->setIdDemandeEvenement(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Destination[]
-     */
-    public function getIdDestination(): Collection
-    {
-        return $this->idDestination;
-    }
-
-    public function addIdDestination(Destination $idDestination): self
-    {
-        if (!$this->idDestination->contains($idDestination)) {
-            $this->idDestination[] = $idDestination;
-            $idDestination->setIdDestination($this);
-        }
-
-        return $this;
-    }
-
-    public function removeIdDestination(Destination $idDestination): self
-    {
-        if ($this->idDestination->removeElement($idDestination)) {
-            // set the owning side to null (unless already changed)
-            if ($idDestination->getIdDestination() === $this) {
-                $idDestination->setIdDestination(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getAvis(): ?string
-    {
-        return $this->avis;
-    }
-
-    public function setAvis(string $avis): self
-    {
-        $this->avis = $avis;
-
-        return $this;
-    }
-
-    public function getNote(): ?float
-    {
-        return $this->note;
-    }
-
-    public function setNote(float $note): self
-    {
-        $this->note = $note;
+        $this->DemandeEvent = $DemandeEvent;
 
         return $this;
     }

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New DemandeEvenement{% endblock %}
+
+{% block body %}
+    <h1>Create new DemandeEvenement</h1>
+
+    {{ include('demande_evenement/_form.html.twig') }}
+
+    <a href="{{ path('demande_evenement_index') }}">back to list</a>
+{% endblock %}

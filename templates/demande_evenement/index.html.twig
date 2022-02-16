@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}DemandeEvenement index{% endblock %}
+
+{% block body %}
+<!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+      
+   <table class="table table-bordered">
+        <thead>
+            <tr style="width: 10px">#</th>
+                <th>Id</th>
+                <th>actions</th>
+                <th style="width: 40px">Label</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for demande_evenement in demande_evenements %}
+            <tr>
+                <td>{{ demande_evenement.id }}</td>
+                <td>
+                    <a href="{{ path('demande_evenement_show', {'id': demande_evenement.id}) }}">show</a>
+                    <a href="{{ path('demande_evenement_edit', {'id': demande_evenement.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="card-footer clearfix">
+<ul class="pagination pagination-sm m-0 float-right">
+<li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+<li class="page-item"><a class="page-link" href="#">1</a></li>
+<li class="page-item"><a class="page-link" href="#">2</a></li>
+<li class="page-item"><a class="page-link" href="#">3</a></li>
+<li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+</ul>
+</div>
+
+    <a href="{{ path('demande_evenement_new') }}">Create new</a>
+             
+  </div>
+  <!-- /.content-wrapper -->
+    
+{% endblock %}
